@@ -24,17 +24,22 @@ export const ADD_USER = gql`
   }
 `;
 
-export const ADD_THOUGHT = gql`
-  mutation addThought($thoughtText: String!) {
-    addThought(thoughtText: $thoughtText) {
-      _id
-      thoughtText
-      thoughtAuthor
-      createdAt
-      comments {
-        _id
-        commentText
+export const SAVE_BOOK = gql`
+  mutation addBook($bookId: ID!) {
+    addBook(bookId: $bookId) {
+      authors
+      description
+      title
+      image
+      link
       }
+  }
+`;
+
+export const REMOVE_BOOK = gql`
+  mutation removeBook($bookId: ID!) {
+    removeBook(bookId: $bookId) {
+      bookId
     }
   }
 `;
