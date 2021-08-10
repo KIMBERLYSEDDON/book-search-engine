@@ -14,7 +14,7 @@ const resolvers = {
     // By adding context to our query, we can retrieve the logged in user without specifically searching for them
     me: async (parent, args, context) => {
       if (context.user) {
-        return User.findOne({ _id: context.user._id });
+        return User.findOne({ _id: context.user._id }).populate('books');
       }
       throw new AuthenticationError('You need to be logged in!');
     },
@@ -45,38 +45,34 @@ const resolvers = {
     },
 
     // Add a third argument to the resolver to access data in our `context`
-    saveBook: async (parent, { userId, addBook }, context) => {
+    saveBook: async (parent, { newBook }, context) => {
       // If context has a `user` property, that means the user executing this mutation has a valid JWT and is logged in
       if (context.user) {
-        return User.findOneAndUpdate(
-          { _id: userId },
+        console.log(context.user)
+        const newSavedBook = await User.findByIdAndUpdate(
+          { _id: context.user._id },
           {
-            $addToSet: { savedBooks: addBook },
+            $push: { savedBooks: newBook },
           },
           {
             new: true,
-            runValidators: true,
+            // runValidators: true,
           }
-        );
+        ); return newSavedBook
       }
       // If user attempts to execute this mutation and isn't logged in, throw an error
       throw new AuthenticationError('You need to be logged in!');
     },
     // Set up mutation so a logged in user can only remove their profile and no one else's
-    removeUser: async (parent, args, context) => {
-      if (context.user) {
-        return User.findOneAndDelete({ _id: context.user._id });
-      }
-      throw new AuthenticationError('You need to be logged in!');
-    },
     // Make it so a logged in user can only remove a skill from their own profile
-    removeBook: async (parent, { book}, context) => {
+    removeBook: async (parent, { bookId }, context) => {
+      console.log( bookId )
       if (context.user) {
-        return User.findOneAndUpdate(
+        const deleteBook = await User.findByIdAndUpdate(
           { _id: context.user._id },
-          { $pull: { savedBooks: book } },
+          { $pull: { savedBooks: { bookId }} },
           { new: true }
-        );
+        ); return deleteBook
       }
       throw new AuthenticationError('You need to be logged in!');
     },
