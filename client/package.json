@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "proxy": "http://localhost:3001",
-  "homepage": "https://KIMBERLYSEDDON.github.io/book-search-engine",
+  "homepage": "https://bookielookie.herokuapp.com/",
   "dependencies": {
     "@apollo/client": "^3.3.5",
     "@testing-library/jest-dom": "^4.2.4",
